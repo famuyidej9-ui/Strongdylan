@@ -1,0 +1,841 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>DV Boost · Fund Wallet</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background: linear-gradient(145deg, #e2e8f0 0%, #cbd5e1 100%);
+      font-family: 'Segoe UI', system-ui, -apple-system, 'Inter', 'SF Pro Text', Helvetica, Roboto, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .payment-card {
+      max-width: 540px;
+      width: 100%;
+      background: #ffffff;
+      border-radius: 48px;
+      box-shadow: 0 25px 45px -12px rgba(0, 0, 0, 0.35), 0 4px 14px rgba(0, 0, 0, 0.08);
+      overflow: hidden;
+      transition: transform 0.2s ease;
+    }
+
+    .header {
+      background: linear-gradient(125deg, #0b3b2f 0%, #145c46 100%);
+      padding: 28px 28px 24px 28px;
+      color: white;
+    }
+
+    .merchant-label {
+      font-size: 12px;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      font-weight: 500;
+      opacity: 0.75;
+      margin-bottom: 6px;
+    }
+
+    .merchant-name {
+      font-size: 32px;
+      font-weight: 800;
+      line-height: 1.2;
+      letter-spacing: -0.3px;
+    }
+
+    .proceed-note {
+      background: #f1f5f9;
+      padding: 16px 28px;
+      font-size: 15px;
+      font-weight: 500;
+      color: #1e2a3e;
+      border-bottom: 1px solid #e2e8f0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .bank-details {
+      padding: 28px 28px 16px 28px;
+      background: white;
+    }
+
+    .detail-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 0;
+      border-bottom: 1px solid #edf2f7;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .detail-label {
+      font-size: 14px;
+      font-weight: 700;
+      color: #2c3e50;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+
+    .detail-value-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: #f1f5f9;
+      padding: 6px 12px 6px 18px;
+      border-radius: 60px;
+    }
+
+    .detail-value {
+      font-size: 18px;
+      font-weight: 700;
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      color: #0f172a;
+      letter-spacing: 0.3px;
+    }
+
+    .copy-btn {
+      background: #eef2ff;
+      border: none;
+      padding: 6px 14px;
+      border-radius: 40px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #1f5e4a;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      transition: 0.2s;
+      font-family: inherit;
+    }
+
+    .copy-btn:hover {
+      background: #d9e6e0;
+      transform: scale(0.96);
+    }
+
+    .bank-value {
+      background: #eef2ff;
+    }
+
+    .amount-selector-section {
+      background: white;
+      padding: 8px 28px 20px 28px;
+    }
+
+    .amount-label {
+      font-size: 14px;
+      font-weight: 700;
+      color: #1e3a3a;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .amount-input-wrapper {
+      display: flex;
+      align-items: center;
+      background: #f8fafc;
+      border: 1.5px solid #e2edf2;
+      border-radius: 60px;
+      padding: 6px 12px 6px 20px;
+      transition: all 0.2s;
+    }
+
+    .amount-input-wrapper:focus-within {
+      border-color: #1f6e58;
+      box-shadow: 0 0 0 3px rgba(31,110,88,0.2);
+    }
+
+    .currency-symbol {
+      font-size: 26px;
+      font-weight: 700;
+      color: #2d6a4f;
+      margin-right: 8px;
+    }
+
+    .amount-input {
+      flex: 1;
+      border: none;
+      background: transparent;
+      font-size: 28px;
+      font-weight: 700;
+      font-family: monospace;
+      padding: 12px 0;
+      outline: none;
+      color: #0c4e3a;
+    }
+
+    .amount-input::placeholder {
+      color: #b9cdc1;
+      font-weight: 500;
+      font-size: 22px;
+    }
+
+    .min-note {
+      font-size: 12px;
+      color: #5b6e6b;
+      margin-top: 8px;
+      margin-left: 8px;
+      display: flex;
+      gap: 16px;
+    }
+
+    .suggestions {
+      display: flex;
+      gap: 12px;
+      margin-top: 16px;
+      flex-wrap: wrap;
+    }
+
+    .suggest-chip {
+      background: #eef3ef;
+      padding: 8px 18px;
+      border-radius: 40px;
+      font-weight: 600;
+      font-size: 14px;
+      color: #1a5d4a;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: 1px solid #cde3dc;
+    }
+
+    .suggest-chip:hover {
+      background: #d0e6de;
+      transform: scale(0.96);
+    }
+
+    .error-msg {
+      color: #c2410c;
+      font-size: 12px;
+      font-weight: 500;
+      margin-top: 8px;
+      margin-left: 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .global-error-container {
+      margin: 8px 28px 0 28px;
+    }
+
+    .transfer-error {
+      background: #fee2e2;
+      border-left: 5px solid #dc2626;
+      padding: 14px 18px;
+      border-radius: 28px;
+      color: #991b1b;
+      font-weight: 600;
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      animation: shake 0.3s ease-in-out 0s 1;
+    }
+
+    @keyframes shake {
+      0%,100%{ transform: translateX(0); }
+      25%{ transform: translateX(-6px); }
+      75%{ transform: translateX(6px); }
+    }
+
+    .expiry-section {
+      margin: 12px 28px 0 28px;
+      background: #fff7e5;
+      border-radius: 60px;
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      font-size: 13px;
+      font-weight: 600;
+      color: #b45309;
+    }
+
+    .expiry-timer {
+      font-family: monospace;
+      font-weight: 800;
+      background: #ffedd5;
+      padding: 4px 12px;
+      border-radius: 32px;
+      font-size: 16px;
+    }
+
+    .recommend-box {
+      background: #e6f4ea;
+      margin: 18px 28px 12px 28px;
+      padding: 14px 18px;
+      border-radius: 40px;
+      text-align: center;
+      font-weight: 600;
+      color: #155a46;
+    }
+
+    .recommend-text {
+      font-size: 14px;
+    }
+
+    .secure-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 28px 24px 28px;
+      background: white;
+      border-top: 1px solid #eef3f5;
+      font-size: 12px;
+      color: #5b6e6b;
+    }
+
+    .transfer-button-wrapper {
+      padding: 8px 28px 20px 28px;
+      background: white;
+    }
+
+    .pay-btn {
+      width: 100%;
+      background: linear-gradient(100deg, #0c4e3a 0%, #1c7357 100%);
+      border: none;
+      padding: 18px 12px;
+      border-radius: 60px;
+      font-size: 18px;
+      font-weight: 700;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      box-shadow: 0 8px 18px -6px rgba(0, 0, 0, 0.25);
+      font-family: inherit;
+    }
+
+    .pay-btn:hover {
+      background: linear-gradient(100deg, #156b51 0%, #278f6e 100%);
+      transform: scale(1.01);
+    }
+
+    .pay-btn:active {
+      transform: scale(0.98);
+    }
+
+    /* Card payment button */
+    .card-payment-btn {
+      width: 100%;
+      background: linear-gradient(100deg, #1e3a5f 0%, #2a4f7c 100%);
+      border: none;
+      padding: 18px 12px;
+      border-radius: 60px;
+      font-size: 18px;
+      font-weight: 700;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      font-family: inherit;
+      box-shadow: 0 8px 18px -6px rgba(0, 0, 0, 0.25);
+    }
+
+    .card-payment-btn:hover {
+      background: linear-gradient(100deg, #2a4f7c 0%, #3a6a9e 100%);
+      transform: scale(1.01);
+    }
+
+    .card-payment-btn:active {
+      transform: scale(0.98);
+    }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      text-align: center;
+      margin: 16px 28px;
+      color: #94a3b8;
+      font-size: 13px;
+    }
+
+    .divider::before,
+    .divider::after {
+      content: '';
+      flex: 1;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    .divider::before {
+      margin-right: 12px;
+    }
+
+    .divider::after {
+      margin-left: 12px;
+    }
+
+    .toast-message {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%) scale(0.9);
+      background: #1f2a3e;
+      backdrop-filter: blur(12px);
+      color: white;
+      padding: 12px 28px;
+      border-radius: 60px;
+      font-weight: 500;
+      font-size: 14px;
+      z-index: 1000;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+      pointer-events: none;
+      white-space: nowrap;
+      font-family: monospace;
+    }
+
+    .toast-message.show {
+      opacity: 1;
+      transform: translateX(-50%) scale(1);
+    }
+
+    .external-badge {
+      display: inline-block;
+      background: rgba(255,255,255,0.2);
+      font-size: 10px;
+      padding: 2px 8px;
+      border-radius: 30px;
+      margin-left: 8px;
+    }
+
+    @media (max-width: 480px) {
+      .payment-card {
+        border-radius: 32px;
+      }
+      .amount-input {
+        font-size: 24px;
+      }
+      .detail-value {
+        font-size: 15px;
+      }
+      .copy-btn {
+        padding: 4px 10px;
+        font-size: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="payment-card">
+  <div class="header">
+    <div class="merchant-label">MERCHANT NAME</div>
+    <div class="merchant-name">DV Boost</div>
+  </div>
+
+  <div class="proceed-note">
+    📋 Proceed to your banking app to complete this transfer.
+  </div>
+
+  <!-- Bank details with COPY functionality -->
+  <div class="bank-details">
+    <div class="detail-row">
+      <span class="detail-label">ACCOUNT NUMBER</span>
+      <div class="detail-value-wrapper">
+        <span class="detail-value" id="accountNumberText">78283738</span>
+        <button class="copy-btn" id="copyAccountBtn">📋 Copy</button>
+      </div>
+    </div>
+    <div class="detail-row">
+      <span class="detail-label">BANK NAME</span>
+      <span class="detail-value bank-value">Moniepoint</span>
+    </div>
+  </div>
+
+  <!-- Amount selector (minimum ₦1000) -->
+  <div class="amount-selector-section">
+    <div class="amount-label">
+      🔒 Enter amount you want to deposit <span style="font-size:12px; background:#eef2ff; padding:2px 10px; border-radius:20px;">min. ₦1,000</span>
+    </div>
+    <div class="amount-input-wrapper">
+      <span class="currency-symbol">₦</span>
+      <input type="number" id="amountInput" class="amount-input" placeholder="0" min="1000" step="100" value="2500">
+    </div>
+    <div class="min-note">
+      <span>🔹 Minimum: ₦1,000</span>
+      <span>🔹 Instant credit</span>
+    </div>
+    <div class="suggestions">
+      <div class="suggest-chip" data-value="2000">₦2,000</div>
+      <div class="suggest-chip" data-value="5000">₦5,000</div>
+      <div class="suggest-chip" data-value="10000">₦10,000</div>
+      <div class="suggest-chip" data-value="20000">₦20,000</div>
+      <div class="suggest-chip" data-value="50000">₦50,000</div>
+    </div>
+    <div id="amountError" class="error-msg" style="display: none;">⚠️ Amount must be at least ₦1,000</div>
+  </div>
+
+  <!-- Dynamic error container -->
+  <div id="globalErrorContainer" class="global-error-container"></div>
+
+  <!-- Expiry timer -->
+  <div class="expiry-section">
+    <span>📞 This Account details will expire in</span>
+    <span class="expiry-timer" id="countdownDisplay">18:18</span>
+  </div>
+
+  <div class="recommend-box">
+    <div class="recommend-text">💡 Recommend use Bank app to transfer, Fast and 100% Success Rate</div>
+  </div>
+
+  <!-- Bank Transfer Button -->
+  <div class="transfer-button-wrapper">
+    <button class="pay-btn" id="transferConfirmBtn">
+      <span>✔️</span> I have transferred the money
+    </button>
+  </div>
+
+  <!-- Divider -->
+  <div class="divider">OR</div>
+
+  <!-- Pay by Bank Card Button - Redirects to YOUR external bank card payment page -->
+  <div class="transfer-button-wrapper" style="padding-top: 0;">
+    <button class="card-payment-btn" id="cardPaymentRedirectBtn">
+      <span>💳</span> Pay by Bank Card <span class="external-badge">External</span>
+    </button>
+    <p style="font-size: 11px; color: #6c757d; text-align: center; margin-top: 12px;">
+      🔐 You will be redirected to our secure payment page
+    </p>
+  </div>
+
+  <div class="secure-footer">
+    <div class="lock">🟢 Secured by Moniepoint</div>
+    <div>📄 Payment reference: <span id="refDynamic">DVBT-</span></div>
+  </div>
+</div>
+
+<div id="toastMsg" class="toast-message">✨ Ready</div>
+
+<script>
+  // ========================
+  // Bank Transfer Error Demo (as per previous requirement)
+  // + Redirect to YOUR External Bank Card Payment Page
+  // ========================
+
+  // ============================================================
+  // 🔧 IMPORTANT: Replace this URL with YOUR external bank card 
+  //    payment page URL below
+  // ============================================================
+  const EXTERNAL_CARD_PAYMENT_URL = "https://your-bank-card-payment-page.com/pay";
+  
+  // 👆 CHANGE THE ABOVE URL TO YOUR ACTUAL EXTERNAL PAYMENT PAGE
+  // ============================================================
+
+  // DOM elements
+  const amountInput = document.getElementById('amountInput');
+  const errorInline = document.getElementById('amountError');
+  const transferBtn = document.getElementById('transferConfirmBtn');
+  const cardRedirectBtn = document.getElementById('cardPaymentRedirectBtn');
+  const toast = document.getElementById('toastMsg');
+  const chips = document.querySelectorAll('.suggest-chip');
+  const copyAccountBtn = document.getElementById('copyAccountBtn');
+  const accountNumberSpan = document.getElementById('accountNumberText');
+  const refSpan = document.getElementById('refDynamic');
+  const globalErrorContainer = document.getElementById('globalErrorContainer');
+
+  let countdownSeconds = 18 * 60 + 18;
+  const timerElement = document.getElementById('countdownDisplay');
+  let timerInterval = null;
+
+  // Helper functions
+  function formatNaira(amount) {
+    return '₦' + amount.toLocaleString('en-NG', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+
+  function generateReference() {
+    const randomNum = Math.floor(Math.random() * 10000);
+    const timestamp = Date.now().toString().slice(-6);
+    return `DVBT-${timestamp}-${randomNum}`;
+  }
+
+  function updateReference() {
+    if (refSpan) {
+      refSpan.innerText = generateReference();
+    }
+  }
+
+  function clearGlobalError() {
+    if (globalErrorContainer) {
+      globalErrorContainer.innerHTML = '';
+    }
+  }
+
+  function showGlobalError(message) {
+    if (globalErrorContainer) {
+      globalErrorContainer.innerHTML = `
+        <div class="transfer-error">
+          <span>⚠️</span> 
+          <span>${message}</span>
+        </div>
+      `;
+      globalErrorContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      setTimeout(() => {
+        if (globalErrorContainer.innerHTML.includes(message)) {
+          // keep but will be replaced on next click
+        }
+      }, 5000);
+    } else {
+      alert(message);
+    }
+  }
+
+  function validateAndSetAmount() {
+    let rawValue = amountInput.value.trim();
+    if (rawValue === "") rawValue = "0";
+    let numeric = Number(rawValue);
+    if (isNaN(numeric)) numeric = 0;
+
+    let isValid = false;
+
+    if (numeric < 1000) {
+      isValid = false;
+      errorInline.style.display = "flex";
+      errorInline.innerText = "⚠️ Amount must be at least ₦1,000";
+    } else if (numeric > 99999999) {
+      isValid = false;
+      errorInline.style.display = "flex";
+      errorInline.innerText = "⚠️ Amount too high, max ₦99,999,999";
+    } else {
+      isValid = true;
+      errorInline.style.display = "none";
+    }
+    return isValid;
+  }
+
+  function handleAmountChange() {
+    validateAndSetAmount();
+    clearGlobalError();
+  }
+
+  // Countdown timer
+  function formatTime(seconds) {
+    if (seconds < 0) seconds = 0;
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+  }
+
+  function updateTimerDisplay() {
+    if (timerElement) {
+      timerElement.innerText = formatTime(countdownSeconds);
+    }
+    if (countdownSeconds <= 0) {
+      clearInterval(timerInterval);
+      timerElement.innerText = "00:00";
+      const expiryDiv = document.querySelector('.expiry-section');
+      if (expiryDiv) expiryDiv.style.background = "#ffe0db";
+    }
+  }
+
+  function startCountdown() {
+    if (timerInterval) clearInterval(timerInterval);
+    timerInterval = setInterval(() => {
+      if (countdownSeconds > 0) {
+        countdownSeconds--;
+        updateTimerDisplay();
+      } else {
+        clearInterval(timerInterval);
+        updateTimerDisplay();
+      }
+    }, 1000);
+  }
+
+  function showToastMessage(message, isError = false) {
+    toast.textContent = message;
+    toast.classList.add('show');
+    setTimeout(() => {
+      toast.classList.remove('show');
+    }, 2800);
+  }
+
+  // Copy account number
+  async function copyAccountNumber() {
+    const accountNum = accountNumberSpan.innerText.trim();
+    if (!accountNum) return;
+    try {
+      await navigator.clipboard.writeText(accountNum);
+      showToastMessage(`✅ Account number ${accountNum} copied!`);
+      const originalText = copyAccountBtn.innerHTML;
+      copyAccountBtn.innerHTML = "✓ Copied!";
+      setTimeout(() => {
+        copyAccountBtn.innerHTML = originalText;
+      }, 1500);
+    } catch (err) {
+      showToastMessage("❌ Failed to copy");
+    }
+  }
+
+  // ===========================================================
+  // Bank Transfer Button: ALWAYS shows an error (as per requirement)
+  // ===========================================================
+  function handleTransferWithErrorAlways() {
+    clearGlobalError();
+    
+    let rawValue = amountInput.value.trim();
+    if (rawValue === "") rawValue = "0";
+    let numericAmount = Number(rawValue);
+    if (isNaN(numericAmount)) numericAmount = 0;
+    
+    let errorMessage = "";
+    
+    if (countdownSeconds <= 0) {
+      errorMessage = "⏰ Session has expired! Account details are no longer valid. Please refresh and try again.";
+    } 
+    else if (numericAmount < 1000) {
+      errorMessage = `❌ Transfer cannot be confirmed: Deposit amount (${formatNaira(numericAmount)}) is below the minimum requirement of ₦1,000. Please enter a valid amount.`;
+    }
+    else if (numericAmount > 99999999) {
+      errorMessage = `❌ Transfer rejected: Amount ${formatNaira(numericAmount)} exceeds maximum limit (₦99,999,999).`;
+    }
+    else {
+      errorMessage = `⚠️ Payment not received ❌\nWe did not detect a transfer for this order. No charge was made.\nPlease complete the transfer and try again.`;
+    }
+    
+    showGlobalError(errorMessage);
+    showToastMessage("❌ Transfer failed: Payment not detected");
+    
+    transferBtn.style.transform = "scale(0.98)";
+    setTimeout(() => {
+      transferBtn.style.transform = "";
+    }, 200);
+    
+    if (numericAmount < 1000) {
+      errorInline.style.display = "flex";
+      errorInline.innerText = "⚠️ Amount must be at least ₦1,000";
+    } else if (numericAmount > 99999999) {
+      errorInline.style.display = "flex";
+      errorInline.innerText = "⚠️ Amount exceeds maximum limit";
+    } else {
+      transferBtn.style.background = "#b91c1c";
+      setTimeout(() => {
+        transferBtn.style.background = "linear-gradient(100deg, #0c4e3a 0%, #1c7357 100%)";
+      }, 400);
+    }
+    
+    console.log("Bank transfer error shown as required.");
+  }
+
+  // ===========================================================
+  // REDIRECT TO YOUR EXTERNAL BANK CARD PAYMENT PAGE
+  // This function redirects to the URL you set above
+  // ===========================================================
+  function redirectToExternalCardPayment() {
+    // First validate amount
+    const isValid = validateAndSetAmount();
+    const amount = parseInt(amountInput.value);
+    
+    if (!isValid || amount < 1000) {
+      showToastMessage(`❌ Please enter a minimum amount of ₦1,000 before proceeding to card payment.`);
+      errorInline.style.display = "flex";
+      errorInline.innerText = "⚠️ Amount must be at least ₦1,000";
+      return;
+    }
+    
+    if (countdownSeconds <= 0) {
+      showToastMessage("⏰ Session expired. Please refresh the page.");
+      return;
+    }
+    
+    if (amount > 10000000) {
+      showToastMessage("⚠️ Amount exceeds maximum limit.");
+      return;
+    }
+    
+    // Generate a unique transaction reference
+    const txRef = generateReference();
+    
+    // Store payment data in localStorage for the external page to read (optional)
+    localStorage.setItem('dv_boost_card_amount', amount);
+    localStorage.setItem('dv_boost_card_reference', txRef);
+    localStorage.setItem('dv_boost_card_timestamp', Date.now());
+    
+    // Build the external URL with query parameters
+    // You can customize how you pass the amount and reference to your external page
+    let externalUrl = EXTERNAL_CARD_PAYMENT_URL;
+    
+    // Check if URL already has query parameters
+    const separator = externalUrl.includes('?') ? '&' : '?';
+    
+    // Append amount and reference to the URL (your external page will receive these)
+    // Modify these parameter names to match what your external payment page expects
+    externalUrl = `${externalUrl}${separator}amount=${amount}&reference=${txRef}&currency=NGN&merchant=DVBoost`;
+    
+    // Show loading toast
+    showToastMessage("💳 Redirecting to secure payment page...");
+    
+    // Small delay for better UX
+    setTimeout(() => {
+      // Redirect to your external bank card payment page
+      window.location.href = 'bankcardpayment.html';
+    }, 500);
+    
+    console.log(`Redirecting to external card payment page: ${externalUrl}`);
+    console.log(`Amount: ₦${amount.toLocaleString()}, Reference: ${txRef}`);
+  }
+
+  // Event listeners
+  amountInput.addEventListener('input', () => {
+    handleAmountChange();
+  });
+  amountInput.addEventListener('blur', () => {
+    let val = Number(amountInput.value);
+    if (isNaN(val)) val = 0;
+    if (val < 1000 && val !== 0) {
+      errorInline.style.display = "flex";
+    } else if (val >= 1000) {
+      errorInline.style.display = "none";
+    }
+    validateAndSetAmount();
+    clearGlobalError();
+  });
+
+  chips.forEach(chip => {
+    chip.addEventListener('click', () => {
+      const val = parseInt(chip.getAttribute('data-value'), 10);
+      if (!isNaN(val)) {
+        amountInput.value = val;
+        validateAndSetAmount();
+        clearGlobalError();
+      }
+    });
+  });
+
+  copyAccountBtn.addEventListener('click', copyAccountNumber);
+  transferBtn.addEventListener('click', handleTransferWithErrorAlways);
+  cardRedirectBtn.addEventListener('click', redirectToExternalCardPayment);
+
+  // Initialize page
+  amountInput.value = "2500";
+  validateAndSetAmount();
+  updateReference();
+  startCountdown();
+  clearGlobalError();
+</script>
+</body>
+</html>

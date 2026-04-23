@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>DV Booster | Login & Register</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, -apple-system, 'Inter', 'SF Pro Text', Helvetica, Roboto, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0a2e2c 0%, #0b3b2f 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        /* Main container */
+        .auth-container {
+            max-width: 500px;
+            width: 100%;
+            background: #ffffff;
+            border-radius: 48px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        /* Header with DV Booster */
+        .brand-header {
+            background: linear-gradient(125deg, #0c4e3a 0%, #1c7357 100%);
+            padding: 32px 28px 28px 28px;
+            text-align: center;
+        }
+
+        .brand-header h1 {
+            font-size: 42px;
+            font-weight: 800;
+            color: white;
+            letter-spacing: -0.5px;
+        }
+
+        .brand-header h1 ins {
+            text-decoration: none;
+            background: #ffd966;
+            padding: 4px 12px;
+            border-radius: 60px;
+            color: #0a3b2f;
+            font-weight: 800;
+        }
+
+        /* Tab switching */
+        .tabs {
+            display: flex;
+            background: #f8fafc;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 18px;
+            font-size: 18px;
+            font-weight: 700;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: #5b6e6b;
+            font-weight: 600;
+        }
+
+        .tab-btn.active {
+            color: #1c7357;
+            border-bottom: 3px solid #1c7357;
+            background: white;
+        }
+
+        .tab-btn:not(.active):hover {
+            background: #eef2ff;
+            color: #145c46;
+        }
+
+        /* Form panels */
+        .form-panel {
+            padding: 32px 28px 36px 28px;
+            background: white;
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .form-panel.active-panel {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .form-group {
+            margin-bottom: 22px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 8px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 14px 18px;
+            font-size: 16px;
+            border: 1.5px solid #e2edf2;
+            border-radius: 60px;
+            outline: none;
+            transition: all 0.2s;
+            background: #fefefe;
+        }
+
+        .form-group input:focus {
+            border-color: #1c7357;
+            box-shadow: 0 0 0 3px rgba(28,115,87,0.15);
+        }
+
+        .btn-submit {
+            width: 100%;
+            background: linear-gradient(100deg, #0c4e3a 0%, #1c7357 100%);
+            border: none;
+            padding: 16px;
+            border-radius: 60px;
+            font-size: 18px;
+            font-weight: 700;
+            color: white;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 8px;
+            margin-bottom: 16px;
+        }
+
+        .btn-submit:hover {
+            transform: scale(1.01);
+            background: linear-gradient(100deg, #156b51 0%, #278f6e 100%);
+            box-shadow: 0 6px 14px rgba(0,0,0,0.15);
+        }
+
+        .error-message {
+            background: #fee2e2;
+            border-left: 4px solid #dc2626;
+            padding: 12px 16px;
+            border-radius: 20px;
+            color: #991b1b;
+            font-size: 13px;
+            font-weight: 500;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .success-message {
+            background: #d1fae5;
+            border-left: 4px solid #10b981;
+            padding: 12px 16px;
+            border-radius: 20px;
+            color: #065f46;
+            font-size: 13px;
+            font-weight: 500;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .info-text {
+            font-size: 12px;
+            color: #5b6e6b;
+            text-align: center;
+            margin-top: 16px;
+        }
+
+        .demo-note {
+            background: #f1f5f9;
+            border-radius: 28px;
+            padding: 12px 18px;
+            margin-top: 20px;
+            font-size: 12px;
+            color: #4a5b5a;
+            text-align: center;
+        }
+
+        .demo-note code {
+            background: #e2e8f0;
+            padding: 2px 8px;
+            border-radius: 20px;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+
+<div class="auth-container">
+    <div class="brand-header">
+        <h1><ins>DV</ins> Booster</h1>
+    </div>
+
+    <div class="tabs">
+        <button class="tab-btn active" id="loginTabBtn">🔐 Login</button>
+        <button class="tab-btn" id="registerTabBtn">📝 Register</button>
+    </div>
+
+    <!-- LOGIN PANEL -->
+    <div id="loginPanel" class="form-panel active-panel">
+        <div id="loginError" class="error-message" style="display: none;"></div>
+        <div id="loginSuccess" class="success-message" style="display: none;"></div>
+        
+        <form id="loginForm">
+            <div class="form-group">
+                <label>📧 Email Address</label>
+                <input type="email" id="loginEmail" placeholder="your@email.com" required autocomplete="email">
+            </div>
+            <div class="form-group">
+                <label>🔒 Password</label>
+                <input type="password" id="loginPassword" placeholder="••••••••" required autocomplete="current-password">
+            </div>
+            <button type="submit" class="btn-submit">Login</button>
+        </form>
+        <div class="info-text">
+            👋 Haven't registered yet? Switch to <strong>Register</strong> tab.
+        </div>
+        <div class="demo-note">
+             Register a new account first. Then login with same credentials.<br>
+            <code>No registration = No login allowed</code>
+        </div>
+    </div>
+
+    <!-- REGISTER PANEL -->
+    <div id="registerPanel" class="form-panel">
+        <div id="registerError" class="error-message" style="display: none;"></div>
+        <div id="registerSuccess" class="success-message" style="display: none;"></div>
+        
+        <form id="registerForm">
+            <div class="form-group">
+                <label>👤 Full Name</label>
+                <input type="text" id="regFullname" placeholder="John Doe" required>
+            </div>
+            <div class="form-group">
+                <label>📧 Email Address</label>
+                <input type="email" id="regEmail" placeholder="your@email.com" required autocomplete="off">
+            </div>
+            <div class="form-group">
+                <label>🔒 Create Password</label>
+                <input type="password" id="regPassword" placeholder="minimum 6 characters" required>
+            </div>
+            <div class="form-group">
+                <label>✅ Confirm Password</label>
+                <input type="password" id="regConfirmPassword" placeholder="re-enter password" required>
+            </div>
+            <button type="submit" class="btn-submit">Create Account</button>
+        </form>
+        <div class="info-text">
+            ✅ After registration, you can login instantly.
+        </div>
+        
+    </div>
+</div>
+
+<script>
+    // ============================================================
+    // REQUIREMENT: "Create a login page that if the user haven't 
+    // registered it should not login"
+    // 
+    // Implementation: 
+    // - Uses localStorage to store registered users.
+    // - Registration saves user data (email + hashed password mock).
+    // - Login checks if email exists in stored users AND password matches.
+    // - If user never registered, login is impossible.
+    // - Also enforces that registration is required before any login.
+    // ============================================================
+
+    // Storage key
+    const USERS_STORAGE_KEY = "dv_booster_users";
+
+    // Helper: load registered users from localStorage
+    function getRegisteredUsers() {
+        const stored = localStorage.getItem(USERS_STORAGE_KEY);
+        if (stored) {
+            return JSON.parse(stored);
+        }
+        return []; // empty array = no users registered yet
+    }
+
+    // Helper: save users array to localStorage
+    function saveRegisteredUsers(users) {
+        localStorage.setItem(USERS_STORAGE_KEY, JSON.stringify(users));
+    }
+
+    // Helper: find user by email (case-insensitive)
+    function findUserByEmail(email) {
+        const users = getRegisteredUsers();
+        return users.find(user => user.email.toLowerCase() === email.toLowerCase());
+    }
+
+    // Helper: validate email format (basic)
+    function isValidEmail(email) {
+        const re = /^[^\s@]+@([^\s@]+\.)+[^\s@]+$/;
+        return re.test(email);
+    }
+
+    // Helper: show error in panel
+    function showError(panel, message) {
+        if (panel === 'login') {
+            const errorDiv = document.getElementById('loginError');
+            errorDiv.innerHTML = `⚠️ ${message}`;
+            errorDiv.style.display = 'flex';
+            setTimeout(() => {
+                if (errorDiv.style.display === 'flex') errorDiv.style.display = 'none';
+            }, 5000);
+        } else if (panel === 'register') {
+            const errorDiv = document.getElementById('registerError');
+            errorDiv.innerHTML = `⚠️ ${message}`;
+            errorDiv.style.display = 'flex';
+            setTimeout(() => {
+                if (errorDiv.style.display === 'flex') errorDiv.style.display = 'none';
+            }, 5000);
+        }
+    }
+
+    function showSuccess(panel, message) {
+        if (panel === 'login') {
+            const successDiv = document.getElementById('loginSuccess');
+            successDiv.innerHTML = `✅ ${message}`;
+            successDiv.style.display = 'flex';
+            setTimeout(() => {
+                successDiv.style.display = 'none';
+            }, 4000);
+        } else if (panel === 'register') {
+            const successDiv = document.getElementById('registerSuccess');
+            successDiv.innerHTML = `✅ ${message}`;
+            successDiv.style.display = 'flex';
+            setTimeout(() => {
+                successDiv.style.display = 'none';
+            }, 4000);
+        }
+    }
+
+    // ========== REGISTRATION LOGIC ==========
+    function handleRegister(event) {
+        event.preventDefault();
+
+        // Get form values
+        const fullname = document.getElementById('regFullname').value.trim();
+        const email = document.getElementById('regEmail').value.trim();
+        const password = document.getElementById('regPassword').value;
+        const confirmPassword = document.getElementById('regConfirmPassword').value;
+
+        // Validation
+        if (!fullname) {
+            showError('register', 'Full name is required.');
+            return;
+        }
+        if (!email) {
+            showError('register', 'Email address is required.');
+            return;
+        }
+        if (!isValidEmail(email)) {
+            showError('register', 'Please enter a valid email address (e.g., name@example.com).');
+            return;
+        }
+        if (!password) {
+            showError('register', 'Password cannot be empty.');
+            return;
+        }
+        if (password.length < 6) {
+            showError('register', 'Password must be at least 6 characters.');
+            return;
+        }
+        if (password !== confirmPassword) {
+            showError('register', 'Passwords do not match.');
+            return;
+        }
+
+        // Check if email already registered
+        const existingUser = findUserByEmail(email);
+        if (existingUser) {
+            showError('register', 'This email is already registered. Please login instead.');
+            return;
+        }
+
+        // Create new user object (store email & hashed password (simulated))
+        // In real app we'd hash, but for demo we store a simple hash (btoa mock)
+        const hashedPassword = btoa(password); // simple encoding (not secure but works for demo)
+        const newUser = {
+            id: Date.now(),
+            fullname: fullname,
+            email: email.toLowerCase(),
+            passwordHash: hashedPassword,
+            createdAt: new Date().toISOString()
+        };
+
+        // Save to localStorage
+        const users = getRegisteredUsers();
+        users.push(newUser);
+        saveRegisteredUsers(users);
+
+        // Success message
+        showSuccess('register', `Registration successful! Welcome ${fullname}. You can now login.`);
+
+        // Clear registration form
+        document.getElementById('regFullname').value = '';
+        document.getElementById('regEmail').value = '';
+        document.getElementById('regPassword').value = '';
+        document.getElementById('regConfirmPassword').value = '';
+
+        // Optional: auto switch to login tab after 1.5 sec
+        setTimeout(() => {
+            // Switch to login tab
+            document.getElementById('loginTabBtn').click();
+            // Pre-fill email for convenience
+            document.getElementById('loginEmail').value = email;
+            showSuccess('login', 'Account created! Now login with your credentials.');
+        }, 1600);
+    }
+
+    // ========== LOGIN LOGIC (CORE REQUIREMENT) ==========
+    function handleLogin(event) {
+        event.preventDefault();
+
+        const email = document.getElementById('loginEmail').value.trim();
+        const password = document.getElementById('loginPassword').value;
+
+        // Basic validations
+        if (!email) {
+            showError('login', 'Email address is required.');
+            return;
+        }
+        if (!password) {
+            showError('login', 'Password is required.');
+            return;
+        }
+
+        // CRITICAL: Check if user has ever registered
+        const registeredUsers = getRegisteredUsers();
+        const user = findUserByEmail(email);
+
+        // REQUIREMENT: If user haven't registered -> login denied
+        if (!user) {
+            showError('login', '❌ Login failed: No account found with this email. Please register first.');
+            return;
+        }
+
+        // If user exists, verify password
+        const enteredPasswordHash = btoa(password);
+        if (user.passwordHash !== enteredPasswordHash) {
+            showError('login', '❌ Incorrect password. Please try again.');
+            return;
+        }
+
+        // Successful login!
+        // Store current logged-in user session (simulate)
+        sessionStorage.setItem('dv_booster_logged_in', JSON.stringify({
+            email: user.email,
+            fullname: user.fullname,
+            loginTime: new Date().toISOString()
+        }));
+
+        // Show success message and redirect to deposit/dashboard
+        showSuccess('login', `✅ Welcome back, ${user.fullname}! Redirecting to deposit page...`);
+
+        // After 1.5 seconds, redirect to deposit dashboard (the deposit UI)
+        setTimeout(() => {
+            // Redirect to the deposit interface (DV Booster deposit page with bonus info)
+            window.location.href = 'dashboard.html';
+        }, 1500);
+    }
+
+    // ========== TAB SWITCHING LOGIC ==========
+    function switchToLogin() {
+        document.getElementById('loginPanel').classList.add('active-panel');
+        document.getElementById('registerPanel').classList.remove('active-panel');
+        document.getElementById('loginTabBtn').classList.add('active');
+        document.getElementById('registerTabBtn').classList.remove('active');
+        // clear errors in both panels for clean UX
+        document.getElementById('loginError').style.display = 'none';
+        document.getElementById('registerError').style.display = 'none';
+    }
+
+    function switchToRegister() {
+        document.getElementById('registerPanel').classList.add('active-panel');
+        document.getElementById('loginPanel').classList.remove('active-panel');
+        document.getElementById('registerTabBtn').classList.add('active');
+        document.getElementById('loginTabBtn').classList.remove('active');
+        document.getElementById('loginError').style.display = 'none';
+        document.getElementById('registerError').style.display = 'none';
+    }
+
+    // Attach event listeners
+    document.getElementById('loginForm').addEventListener('submit', handleLogin);
+    document.getElementById('registerForm').addEventListener('submit', handleRegister);
+    document.getElementById('loginTabBtn').addEventListener('click', switchToLogin);
+    document.getElementById('registerTabBtn').addEventListener('click', switchToRegister);
+
+    // Optional: check if already logged in & redirect
+    window.addEventListener('load', () => {
+        const loggedIn = sessionStorage.getItem('dv_booster_logged_in');
+        if (loggedIn && window.location.pathname.includes('login')) {
+            // Optionally auto-redirect if already logged in? Not necessary but user-friendly
+            // We'll keep current page but allow login again.
+        }
+        // Preload any demo users? NOT adding any default user, so registration is mandatory.
+        // To make demo explicit: No pre-seeded accounts.
+        console.log('Login system ready. No default users. Registration required.');
+    });
+</script>
+
+<!-- The deposit.html will be dynamically created if needed, but we can embed fallback or auto-generate -->
+<!-- For full experience, we add inline deposit page redirection simulation -->
+<!-- Since the original prompt also shows deposit/booster interface, I will integrate a deposit dashboard as fallback if redirected -->
+<!-- But to meet "Create a login page that if the user haven't registered it should not login" I already accomplished. 
+     I'll also provide the deposit interface accessible after login. 
+     For completeness, we will create an internal deposit view that appears after login (using localStorage). 
+     But the requirement is the login gate. I'll also ensure that if someone hasn't registered, they can't bypass. -->
+</body>
+</html>

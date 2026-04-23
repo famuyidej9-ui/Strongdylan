@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>DV Boost – Smart Pricing & External Redirects</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: system-ui, 'Segoe UI', 'Inter', -apple-system, BlinkMacSystemFont, 'Roboto', sans-serif;
+    }
+
+    body {
+      background: linear-gradient(145deg, #f0f4ff 0%, #e9eef8 100%);
+      min-height: 100vh;
+      padding: 24px 16px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* main card container */
+    .app-container {
+      max-width: 640px;
+      width: 100%;
+      margin: 0 auto;
+      background: #ffffff;
+      border-radius: 48px 32px 48px 32px;
+      box-shadow: 0 25px 45px -12px rgba(0, 0, 0, 0.25), 0 4px 12px rgba(0, 0, 0, 0.05);
+      overflow: hidden;
+      transition: all 0.2s ease;
+    }
+
+    .content-padding {
+      padding: 28px 24px 32px;
+    }
+
+    .dv-header {
+      text-align: center;
+      margin-bottom: 28px;
+    }
+    .dv-header h1 {
+      font-size: 2.2rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #1E2A5E, #3A4D8F);
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+      letter-spacing: -0.3px;
+    }
+
+    /* Balance Container */
+    .balance-container {
+      background: #f8fbff;
+      border-radius: 32px;
+      padding: 20px 24px;
+      margin-bottom: 32px;
+      box-shadow: inset 0 1px 3px #00000008, 0 10px 20px -8px rgba(0, 0, 0, 0.1);
+      border: 1px solid rgba(58, 77, 143, 0.15);
+    }
+    .balance-label {
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      font-weight: 600;
+      letter-spacing: 1px;
+      color: #4b5a7c;
+      margin-bottom: 8px;
+    }
+    .balance-amount {
+      font-size: 2.8rem;
+      font-weight: 800;
+      color: #1E2A5E;
+      line-height: 1.2;
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .balance-amount span {
+      font-size: 1rem;
+      font-weight: 500;
+      color: #5f6f94;
+    }
+    .fund-btn {
+      margin-top: 16px;
+      background: #2c3e8f;
+      border: none;
+      width: 100%;
+      padding: 14px 0;
+      border-radius: 60px;
+      font-weight: 700;
+      font-size: 1rem;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      cursor: pointer;
+      transition: 0.2s;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+    }
+    .fund-btn:hover {
+      background: #1f2f6e;
+      transform: scale(0.98);
+    }
+
+    .form-group {
+      margin-bottom: 24px;
+    }
+    .form-label {
+      font-weight: 700;
+      font-size: 0.9rem;
+      color: #1e2a44;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    select, input {
+      width: 100%;
+      padding: 14px 18px;
+      font-size: 0.95rem;
+      border: 1.5px solid #e2e8f2;
+      border-radius: 28px;
+      background: #ffffff;
+      transition: 0.2s;
+      outline: none;
+      font-weight: 500;
+      color: #0f172a;
+    }
+    select:focus, input:focus {
+      border-color: #3A4D8F;
+      box-shadow: 0 0 0 3px rgba(58, 77, 143, 0.2);
+    }
+    .quantity-error {
+      border-color: #e53e3e !important;
+      background-color: #fff5f5 !important;
+    }
+    .error-message {
+      font-size: 0.7rem;
+      color: #e53e3e;
+      margin-top: 6px;
+      margin-left: 12px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .hint-text {
+      font-size: 0.7rem;
+      color: #6c7a91;
+      margin-top: 6px;
+      margin-left: 12px;
+      letter-spacing: 0.2px;
+    }
+    .rate-badge {
+      background: #eef2ff;
+      padding: 6px 12px;
+      border-radius: 40px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: #1E2A5E;
+      display: inline-block;
+      margin-top: 8px;
+    }
+    .amount-input-wrap {
+      position: relative;
+    }
+    .amount-prefix {
+      position: absolute;
+      left: 18px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-weight: 600;
+      color: #1E2A5E;
+      background: #eef2ff;
+      padding: 4px 10px;
+      border-radius: 40px;
+      font-size: 0.8rem;
+      pointer-events: none;
+    }
+    .amount-input-wrap input {
+      padding-left: 70px;
+      background: #f5f7fe;
+      cursor: default;
+    }
+    .submit-order {
+      background: linear-gradient(95deg, #1f2f5e, #2a3d78);
+      border: none;
+      width: 100%;
+      padding: 16px 0;
+      border-radius: 50px;
+      font-weight: 800;
+      font-size: 1.1rem;
+      color: white;
+      margin-top: 12px;
+      cursor: pointer;
+      transition: 0.2s;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    }    .submit-order:hover {
+      background: linear-gradient(95deg, #16244b, #1c2c60);
+      transform: translateY(-2px);
+    }
+    .submit-order:active {
+      transform: translateY(1px);
+    }
+    footer {
+      font-size: 0.7rem;
+      text-align: center;
+      color: #8892b0;
+      margin-top: 24px;
+    }
+    @media (max-width: 480px) {
+      .content-padding {
+        padding: 20px 18px;
+      }
+      .balance-amount {
+        font-size: 2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="app-container" id="dvBoostApp">
+  <div class="content-padding">
+    <div class="dv-header">
+      <h1>🚀 DV Boost</h1>
+    </div>
+
+    <!-- Balance Container -->
+    <div class="balance-container">
+      <div class="balance-label">💼 Wallet Balance</div>
+      <div class="balance-amount">
+        ₦<span id="balanceDisplay">0.00</span> <span>NGN</span>
+      </div>
+      <button class="fund-btn" id="addFundBtn">
+        💰 + Add Fund
+      </button>
+    </div>
+
+    <!-- Category Select -->
+    <div class="form-group">
+      <div class="form-label">📁 Category</div>
+      <select id="categorySelect">
+        <option value="TikTok Views">Boost your TikTok Views</option>
+        <option value="TikTok Followers">Boost your TikTok Followers</option>
+        <option value="TikTok Likes">Boost your TikTok Likes</option>
+        <option value="YouTube Views">Boost your YouTube Views</option>
+        <option value="YouTube Subscribers">Boost your YouTube Subscribers</option>
+        <option value="YouTube Likes">Boost your YouTube Likes</option>
+        <option value="Instagram Followers">Boost your Instagram Followers</option>
+        <option value="Instagram Likes">Boost your Instagram Likes</option>
+        <option value="Instagram Views">Boost your Instagram Views</option>
+      </select>
+      <div id="rateDisplay" class="rate-badge">💰 Current rate: ₦0.00 per unit</div>
+    </div>
+
+    <!-- Link Input -->
+    <div class="form-group">
+      <div class="form-label">🔗 Link</div>
+      <input type="url" id="linkInput" placeholder="https://example.com/video-or-profile" value="">
+      <div class="hint-text">💡 Paste the link of the content/profile you want to boost</div>
+    </div>
+
+    <!-- Quantity Input (Minimum 1000 enforced) -->
+    <div class="form-group">
+      <div class="form-label">📊 Quantity <span style="font-weight:normal; color:#4a5b7a;">(Minimum: 1,000)</span></div>
+      <input type="number" id="quantityInput" placeholder="Enter quantity" min="1000" step="100" value="1000">
+      <div id="quantityErrorMsg" class="error-message" style="display: none;">
+        ⚠️ Quantity cannot be less than 1,000. Minimum order is 1,000 units.
+      </div>
+      <div class="hint-text">✨ Minimum 1,000 units required. Enter any value above to calculate amount.</div>
+    </div>
+
+    <!-- Amount Field (Auto-calculated) -->
+    <div class="form-group">
+      <div class="form-label">💰 Amount (NGN)</div>
+      <div class="amount-input-wrap">
+        <span class="amount-prefix">₦</span>
+        <input type="number" id="amountInput" placeholder="0.00" readonly style="background:#f5f7fe; cursor:default;">
+      </div>
+      <div class="hint-text">💸 Auto-calculated: Quantity × Unit price (based on category)</div>
+    </div>
+
+    <!-- Submit Order Button - Redirects to external page -->
+    <button class="submit-order" id="submitOrderBtn">📦 Submit Order</button>
+    <footer>Secure checkout • instant top-up</footer>
+  </div>
+</div>
+
+<script>
+  // ======================== CONFIGURATION ========================
+  // Replace these URLs with your actual external page links
+  const EXTERNAL_FUND_PAGE_URL = "https://yourdomain.com/fund-wallet";     // <-- CHANGE to your fund page URL
+  const EXTERNAL_ORDER_PAGE_URL = "https://yourdomain.com/place-order";    // <-- CHANGE to your order submission page URL
+  
+  // NOTE: For demo purposes, if you don't have real external pages yet, 
+  // the code will use console logs and alerts as fallback.
+  // To test redirection, replace with actual URLs. To avoid breaking demo,
+  // we still show alert and redirect simulation if URLs are default.
+  
+  // ======================== PRICING LOGIC ========================
+  // Unit cost mapping based on selection
+  function getUnitCost(categoryValue) {
+    switch(categoryValue) {
+      // TikTok Views: #1
+      case "TikTok Views":
+        return 1.0;
+      // TikTok Followers: #1.5
+      case "TikTok Followers":
+        return 1.5;
+      // TikTok Likes: #1.3
+      case "TikTok Likes":
+        return 1.3;
+      // YouTube Views: #1
+      case "YouTube Views":
+        return 1.0;
+      // YouTube Subscribers: #1.5
+      case "YouTube Subscribers":
+        return 1.5;
+      // YouTube Likes: #1.3
+      case "YouTube Likes":
+        return 1.3;
+      // Instagram Followers: #1.5
+      case "Instagram Followers":
+        return 1.5;
+      // Instagram Likes: #1.3
+      case "Instagram Likes":
+        return 1.3;
+      // Instagram Views: #1
+      case "Instagram Views":
+        return 1.0;
+      default:
+        return 1.0; // fallback
+    }
+  }
+  
+  // Get readable category name and rate display
+  function updateRateDisplay() {
+    const selectEl = document.getElementById('categorySelect');
+    const selectedValue = selectEl.value;
+    const rate = getUnitCost(selectedValue);
+    const rateDisplaySpan = document.getElementById('rateDisplay');
+    if (rateDisplaySpan) {
+      rateDisplaySpan.innerHTML = `💰 Current rate: ₦${rate.toFixed(2)} per unit`;
+    }
+    return rate;
+  }
+  
+  // Global state
+  let currentBalance = 0.00;   // in NGN (demo balance, can be synced from localStorage if needed)
+  const MIN_QUANTITY = 1000;
+  
+  // DOM elements
+  const balanceSpan = document.getElementById('balanceDisplay');
+  const categorySelect = document.getElementById('categorySelect');
+  const linkInput = document.getElementById('linkInput');
+  const quantityInput = document.getElementById('quantityInput');
+  const amountInput = document.getElementById('amountInput');
+  const addFundBtn = document.getElementById('addFundBtn');
+  const submitBtn = document.getElementById('submitOrderBtn');
+  const quantityErrorMsg = document.getElementById('quantityErrorMsg');
+  
+  // Helper: update balance UI
+  function updateBalanceUI() {
+    balanceSpan.innerText = currentBalance.toFixed(2);
+    // Store balance in localStorage for external pages if needed (optional)
+    localStorage.setItem('dvBoost_balance', currentBalance.toFixed(2));
+  }
+  
+  // Load saved balance from localStorage (optional, to persist across pages)
+  function loadSavedBalance() {
+    const saved = localStorage.getItem('dvBoost_balance');
+    if (saved !== null && !isNaN(parseFloat(saved))) {
+      currentBalance = parseFloat(saved);
+    } else {
+      currentBalance = 0.00;
+    }
+    updateBalanceUI();
+  }
+  
+  // Core calculation: returns { isValid, quantity, amount, unitCost }
+  function validateAndCalculate() {
+    let rawQty = quantityInput.value.trim();
+    let qtyNum = parseInt(rawQty, 10);
+    const selectedCat = categorySelect.value;
+    const unitCost = getUnitCost(selectedCat);
+    
+    let isValid = true;
+    let errorText = '';
+    
+    if (isNaN(qtyNum)) {
+      isValid = false;
+      errorText = 'Quantity must be a valid number';
+    } else if (qtyNum < MIN_QUANTITY) {
+      isValid = false;
+      errorText = `Quantity cannot be less than ${MIN_QUANTITY.toLocaleString()}. Minimum order is 1,000 units.`;
+    } else if (qtyNum > 10000000) {
+      // huge quantity but still valid
+      isValid = true;
+    }
+    
+    // Calculate amount based on unit cost
+    let calculatedAmount = 0;
+    if (!isNaN(qtyNum) && qtyNum > 0) {
+      calculatedAmount = qtyNum * unitCost;
+    }
+    
+    // Show/hide error message and style
+    if (!isValid) {
+      quantityErrorMsg.style.display = 'flex';
+      quantityErrorMsg.innerText = `⚠️ ${errorText}`;
+      quantityInput.classList.add('quantity-error');
+      amountInput.value = calculatedAmount.toFixed(2);
+      submitBtn.disabled = true;
+      return { isValid: false, quantity: isNaN(qtyNum) ? 0 : qtyNum, amount: calculatedAmount, unitCost };
+    } else {
+      quantityErrorMsg.style.display = 'none';
+      quantityInput.classList.remove('quantity-error');
+      amountInput.value = calculatedAmount.toFixed(2);
+      submitBtn.disabled = false;
+      return { isValid: true, quantity: qtyNum, amount: calculatedAmount, unitCost };
+    }
+  }
+  
+  // When category changes: update rate display, recalc amount, revalidate
+  function onCategoryChange() {
+    updateRateDisplay();
+    validateAndCalculate();
+  }
+  
+  // When quantity changes: revalidate and recalc
+  function onQuantityChange() {
+    validateAndCalculate();
+  }
+  
+  // Helper to build order data object for external page (can be passed via URL params or localStorage)
+  function buildOrderData() {
+    const category = categorySelect.value;
+    const categoryDisplay = categorySelect.options[categorySelect.selectedIndex]?.text || category;
+    const link = linkInput.value.trim();
+    const quantityRaw = parseInt(quantityInput.value, 10);
+    const quantity = isNaN(quantityRaw) ? MIN_QUANTITY : (quantityRaw < MIN_QUANTITY ? MIN_QUANTITY : quantityRaw);
+    const unitCost = getUnitCost(category);
+    const amount = quantity * unitCost;
+    return {
+      category: category,
+      categoryDisplay: categoryDisplay,
+      link: link,
+      quantity: quantity,
+      unitCost: unitCost,
+      amount: amount,
+      balance: currentBalance
+    };
+  }
+  
+  // Submit order: validate, check balance, then redirect to external order page with data
+  function handleSubmitOrder() {
+    // 1) Validate quantity & form
+    const validation = validateAndCalculate();
+    if (!validation.isValid) {
+      const qtyVal = parseInt(quantityInput.value, 10);
+      if (isNaN(qtyVal)) {
+        alert(`❌ Invalid quantity. Please enter a numeric value. Minimum quantity is ${MIN_QUANTITY.toLocaleString()}.`);
+      } else if (qtyVal < MIN_QUANTITY) {
+        alert(`❌ Cannot submit order: Quantity must be at least ${MIN_QUANTITY.toLocaleString()} units.\nYou entered ${qtyVal.toLocaleString()}. Please increase quantity.`);
+      } else {
+        alert(`❌ Please fix quantity errors before submitting.`);
+      }
+      quantityInput.focus();
+      return;
+    }
+     // 2) Validate link
+    const linkValue = linkInput.value.trim();
+    if (linkValue === "") {
+      
+      linkInput.focus();
+      return;
+    }
+    if (!linkValue.startsWith("http://") && !linkValue.startsWith("https://")) {
+      
+      linkInput.focus();
+      return;
+    }
+    
+    // 3) Get order details
+    const orderData = buildOrderData();
+    const totalAmount = orderData.amount;
+    const finalQuantity = orderData.quantity;
+    
+    // 4) Balance check
+    if (currentBalance < totalAmount) {
+      
+      // Redirect to external fund page directly? Or prompt user to click Add Fund.
+      // We'll open external fund page in new tab? But user expects to go to fund page when clicking Add Fund button.
+      // For order flow, we just alert and let user manually click Add Fund.
+      return;
+    }
+    
+    // 5) Deduct balance locally (optional simulation) - but actual deduction will happen on external backend.
+    // Since external page handles real payment/order, we can either deduct locally or trust external.
+    // For better UX: we'll store order details in localStorage and deduct only after external confirmation? 
+    // To be safe (demo requirements), we'll not deduct here; the external page will process order & deduct. 
+    // The local balance will be updated after return via sync? We'll add a storage sync.
+    // However requirement: make submit order button take me to another page. We'll redirect to external order page with order data.
+    
+    // Prepare data to send via URL parameters or localStorage
+    const orderPayload = {
+      category: orderData.category,
+      categoryName: orderData.categoryDisplay,
+      link: orderData.link,
+      quantity: orderData.quantity,
+      unitPrice: orderData.unitCost,
+      totalAmount: orderData.amount,
+      balanceBefore: currentBalance,
+      timestamp: Date.now()
+    };
+    
+    // Store in sessionStorage so external page can read
+    sessionStorage.setItem('dvBoost_pending_order', JSON.stringify(orderPayload));
+    // Also store current balance for reference
+    localStorage.setItem('dvBoost_balance', currentBalance.toFixed(2));
+    
+    // Redirect to external order page
+    // Build URL with query parameters for easy access (optional)
+    const params = new URLSearchParams();
+    params.append('category', orderData.category);
+    params.append('quantity', orderData.quantity);
+    params.append('amount', orderData.amount.toFixed(2));
+    params.append('link', encodeURIComponent(orderData.link));
+    
+    const redirectUrl = `${EXTERNAL_ORDER_PAGE_URL}?${params.toString()}`;
+    
+    // If the external URL is default placeholder, show demo simulation and alert
+    if (EXTERNAL_ORDER_PAGE_URL === "paymentviabank.html") {
+      console.log("DEMO MODE: order data =", orderPayload);
+      
+      // Simulate success: deduct balance only for demo flow to show complete cycle
+      if (currentBalance >= totalAmount) {
+        currentBalance = parseFloat((currentBalance - totalAmount).toFixed(2));
+        updateBalanceUI();
+        
+      }
+      return;
+    }
+    
+    // Real redirect to external order processing page
+    window.location.href = redirectUrl;
+  }
+  
+  // Add Fund button: redirect to external funding page
+  function handleAddFund() {
+    // Store current balance as return reference
+    localStorage.setItem('dvBoost_balance', currentBalance.toFixed(2));
+    localStorage.setItem('dvBoost_return_url', window.location.href);
+    
+    if (EXTERNAL_FUND_PAGE_URL === "paymentviabank.html") {
+      alert(`[DEMO] Add Fund button would redirect to: ${EXTERNAL_FUND_PAGE_URL}\n\nReplace with your actual external funding page URL.`);
+      // Simulate adding funds for demo (easier testing)
+      let addAmount = parseFloat(prompt("Enter demo amount to add to wallet (NGN):", "5000"));
+      if (!isNaN(addAmount) && addAmount > 0) {
+        currentBalance += addAmount;
+        updateBalanceUI();
+      }
+      return;
+    }
+    
+    // Real redirect to external funding page
+    window.location.href = 'paymentviabank.html';
+  }
+  
+  // Listen for storage events to sync balance when returning from external pages (if external page updates localStorage)
+  window.addEventListener('storage', function(event) {
+    if (event.key === 'dvBoost_balance') {
+      const newBalance = parseFloat(event.newValue);
+      if (!isNaN(newBalance)) {
+        currentBalance = newBalance;
+        updateBalanceUI();
+        validateAndCalculate(); // re-check order amount relative to new balance
+      }
+    }
+  });
+  
+  // Function to check for updated balance on page focus (when returning from external page)
+  function syncBalanceFromStorage() {
+    const storedBalance = localStorage.getItem('dvBoost_balance');
+    if (storedBalance !== null && !isNaN(parseFloat(storedBalance))) {
+      const parsed = parseFloat(storedBalance);
+      if (parsed !== currentBalance) {
+        currentBalance = parsed;
+        updateBalanceUI();
+        validateAndCalculate();
+      }
+    }
+  }
+  
+  // Event listeners
+  categorySelect.addEventListener('change', onCategoryChange);
+  quantityInput.addEventListener('input', onQuantityChange);
+  quantityInput.addEventListener('blur', function() {
+    // Enforce minimum but do not override value; show error
+    let val = parseInt(quantityInput.value, 10);
+    if (isNaN(val)) {
+      // if empty, set to 1000 for better UX
+      quantityInput.value = MIN_QUANTITY;
+      validateAndCalculate();
+    } else if (val < MIN_QUANTITY) {
+      // keep as is but show error, user can increase
+      validateAndCalculate();
+    } else {
+      validateAndCalculate();
+    }
+  });
+  
+  addFundBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    handleAddFund();
+  });
+  
+  submitBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    handleSubmitOrder();
+  });
+  
+  // Initialize 
+  function init() {
+    loadSavedBalance();
+    updateRateDisplay();
+    // set default quantity to 1000
+    quantityInput.value = MIN_QUANTITY;
+    validateAndCalculate();
+    // sync on page visibility (when returning from external pages)
+    document.addEventListener('visibilitychange', function() {
+      if (!document.hidden) {
+        syncBalanceFromStorage();
+      }
+    });
+  }
+  
+  init();
+</script>
+</body>
+</html>
